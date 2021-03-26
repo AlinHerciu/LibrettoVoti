@@ -26,6 +26,9 @@ public class TestLibretto {
 		System.out.println(venticinque);					   //non c è il new perche lo fa il metodo chiamato
 		
 		Libretto venticinquee = libretto.votiUguali(25); //in questo modo ottengo un nuovo libretto
-		System.out.println(venticinquee);	
+		System.out.println(venticinquee);
+		
+		Voto analisi1 = libretto.ricercaCorso("Analisi1");
+		System.out.println(analisi1);
 	}
 }

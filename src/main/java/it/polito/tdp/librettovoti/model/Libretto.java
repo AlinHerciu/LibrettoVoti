@@ -1,7 +1,9 @@
 package it.polito.tdp.librettovoti.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Libretto { //al suo interno contiene tanti coti
 
@@ -13,15 +15,21 @@ public class Libretto { //al suo interno contiene tanti coti
 	                         //poi che sia un ArrayList o una LinkedList lo decido successivamente
 						     //<> indicano che la lista è un interfafaccia generica
 							 //in questo caso la lista conterra ggetti di tipo Voto oppure sue sottoclassi
+	private Map<String, Voto> votiMap; //identity Map
+									   //Perchè creare anche una mappa di voti?
+									   // In questo modo quando cerco un voto non devo scorrere tutti gli elementi come nelle liste
+									   //tutti gli elementi sono facilmente accessibili grazie al nome dell'esame (nomeEsame --> voto)
 	
 	public Libretto() {
 		this.voti = new ArrayList<>(); //qui effettivamente creo la classe e scelgo ArrayList (new)
 									   //lo faccio perchè è richiesto e questa è la singola riga del codice
 		                               //in cui io lo decido--> se dovessi cambiare cambio qui
+		this.votiMap = new HashMap<>();
 	}
 
-	public void add(Voto v) {
+	public void add(Voto v) { //questo metodo add è vitale in quanto ridefinito manualmente e possiamo implementare piu operazioni
 		this.voti.add(v);   //in questo caso io sfrutto l'add delle liste senza preoccuparmi di come si inserisce il voto
+		this.votiMap.put(v.getNome(), v);
 	}
 	
 	public String toString() { //sarebbe il vecchio descriviti
@@ -72,6 +80,71 @@ public class Libretto { //al suo interno contiene tanti coti
 		}
 		return risultato;
 	}
+	
+	/**
+	 * ricerca nel Libretto il voto di un esame, dato il nome del corso
+	 * @param nomeCorso
+	 * @return
+	 */
+	
+	public Voto ricercaCorso(String nomeCorso) {
+	//	Voto risultato = null;
+	//	for(Voto v: this.voti) {
+	//		if(v.getNome().equals(nomeCorso)) { //if mi seleziona effettivamente delle caselle 
+	//			risultato = v;					//devo usare equals perche sto confrontando due oggetti
+	//			break;
+	//		}
+	//	}
+	//	return risultato;
+		
+		return this.votiMap.get(nomeCorso);
+		}
+	
+	/**
+	 * Verifica se nel libretto c'è già un voto con lo stesso esame e la stessa votazione
+	 * @param v
+	 * @return
+	 */
+	public boolean esisteDuplicato(Voto v) {
+	//Questo metodo funzionerebbe con la lista ed è ottimo ma preferisco accedere alla Map perche è migliore
+	//	boolean trovato = false;
+	//	for(Voto vo: this.voti)  {  //invento un oggetto che mi scorre la lista dei voti gi apresenti nel libretto
+	//		if(vo.getNome().equals(v.getNome()) && vo.getVoto()==v.getVoto())
+	//			trovato= true;
+	//		break;
+	//	}
+	//	return trovato;
+	
+	Voto trovato = this.votiMap.get(v.getNome()); //imposto un voto trovato con quello che mi passa il metodo
+	if(trovato == null)  //se il metodo get della mappa non me lo trova allora non esiste duplicato
+		return false;
+	if(trovato.getVoto()==v.getVoto()) //se lo trova e ha anche uguale voto allora esiste duplicato
+		return true;
+	else
+		return false;
+	}
+	/**
+	 * Verifica se nel libretto c'è già un voto con lo stesso esame ma con votazione diversa
+	 * @param v
+	 * @return
+	 */
+	public boolean esisteConflitto(Voto v) {
+	//	boolean trovato= false;
+	//	for(Voto vo: this.voti)  {  //invento un oggetto che mi scorre la lista dei voti gi apresenti nel libretto
+	//		if(vo.getNome().equals(v.getNome()) && vo.getVoto()!=v.getVoto())
+	//			trovato = true;
+	//		break;
+	//	}
+	//	return trovato;
+		
+		Voto trovato = this.votiMap.get(v.getNome());
+		if(trovato==null)
+			return false;
+		if(trovato.getVoto()!=v.getVoto())
+			return true;
+		else
+			return false;
+		}
 }
 
 
